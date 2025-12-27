@@ -33,15 +33,17 @@ class Settings(BaseSettings):
 
     openai_api_key: str = Field(
         alias="OPENAI_API_KEY",
+        default="sk-hxpdxoddnpsmvqtacagzotqljfxkterlfplpkhwrittzgdhy",
         description="API key for the OpenAI-compatible endpoint defined in the article requirements.",
     )
     openai_model: str = Field(
         alias="OPENAI_MODEL",
-        default="gpt-4o-mini",
+        default="Qwen/Qwen3-8B",
         description="Default model identifier for LLM calls.",
     )
     openai_base_url: HttpUrl = Field(
         alias="OPENAI_BASE_URL",
+        default="https://api.siliconflow.cn/v1",
         description="Base URL for the OpenAI-compatible API (e.g., SiliconFlow proxy).",
     )
     openai_temperature: float = Field(
