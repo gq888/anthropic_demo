@@ -82,6 +82,11 @@ class Settings(BaseSettings):
         default=None,
         description="Optional path to JSON/CSV fixtures used by offline research simulations.",
     )
+    tavily_api_key: str = Field(
+        alias="TAVILY_API_KEY",
+        default="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",
+        description="API key for Tavily live search integration.",
+    )
 
 
 @lru_cache(maxsize=1)

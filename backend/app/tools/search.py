@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
 
+import anyio
 from tavily import TavilyClient
 
 from app.core.settings import get_settings
@@ -26,8 +27,11 @@ class SearchTool:
         self._client = TavilyClient(api_key=api_key)
 
     async def search(self, query: str, limit: int = 3) -> List[SearchResult]:
-        # Tavily SDK currently exposes synchronous API; run in thread if needed
-        response = await self._client.search_async(query=query, max_results=limit)
+        response = await anyio.to_thread.run_sync(
+            self._client.search,
+            query,
+            max_results=limit,
+        )
         return [
             SearchResult(title=result["title"], snippet=result["content"], url=result["url"])
             for result in response.get("results", [])
