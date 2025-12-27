@@ -62,23 +62,36 @@ class BaseAgent(abc.ABC):
         self,
         prompt: str,
         system_prompt: Optional[str] = None,
-        retries: int = 2,
+        retries: int = 4,
     ) -> str:
+        prompt_preview = prompt.strip()
+        if len(prompt_preview) > 500:
+            prompt_preview = f"{prompt_preview[:497]}..."
+
+        system_prompt_preview = system_prompt.strip() if isinstance(system_prompt, str) else None
+        if system_prompt_preview and len(system_prompt_preview) > 500:
+            system_prompt_preview = f"{system_prompt_preview[:497]}..."
+
+        model_name = getattr(self.llm._settings, "openai_model", None)
+
         for attempt in range(retries + 1):
+            await self.emit_event(
+                EventType.TOOL_CALL,
+                {
+                    "tool": "llm",
+                    "model": model_name,
+                    "attempt": attempt + 1,
+                    "max_attempts": retries + 1,
+                    "retry": attempt > 0,
+                    "prompt": prompt_preview,
+                    "system_prompt": system_prompt_preview,
+                },
+            )
             try:
                 return await self.llm.complete(prompt=prompt, system_prompt=system_prompt)
             except HTTPException as exc:
                 if exc.status_code == 504 and attempt < retries:
                     delay = 2**attempt
-                    await self.emit_event(
-                        EventType.LLM_RETRY,
-                        {
-                            "attempt": attempt + 1,
-                            "max_attempts": retries + 1,
-                            "delay_seconds": delay,
-                            "reason": "timeout",
-                        },
-                    )
                     await asyncio.sleep(delay)
                     continue
                 raise
