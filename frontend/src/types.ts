@@ -3,6 +3,13 @@ export type CitationEntry = {
   url?: string;
 };
 
+export type EvaluationResult = {
+  overall_score: number;
+  passed: boolean;
+  rubric_scores: Record<string, number>;
+  feedback?: string | null;
+};
+
 export type RunSummary = {
   id: string;
   query: string;
@@ -11,6 +18,7 @@ export type RunSummary = {
   plan?: string | null;
   final_report?: string | null;
   citations?: CitationEntry[];
+  evaluation?: EvaluationResult | null;
 };
 
 export type EventMessage = {

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+import asyncio
 from datetime import datetime
 from typing import Any, Optional
 
@@ -10,6 +11,7 @@ from app.llm.client import LLMClient
 from app.models.enums import AgentRole, AgentStatus, EventType
 from app.models.events import RunEvent
 from app.services.run_store import run_store
+from fastapi import HTTPException
 
 
 class BaseAgent(abc.ABC):
@@ -56,8 +58,30 @@ class BaseAgent(abc.ABC):
         await run_store.append_finding(self.run_id, self.agent_id, content)
         await self.emit_event(EventType.FINDING_RECORDED, {"content": content})
 
-    async def plan_with_llm(self, prompt: str, system_prompt: Optional[str] = None) -> str:
-        return await self.llm.complete(prompt=prompt, system_prompt=system_prompt)
+    async def plan_with_llm(
+        self,
+        prompt: str,
+        system_prompt: Optional[str] = None,
+        retries: int = 2,
+    ) -> str:
+        for attempt in range(retries + 1):
+            try:
+                return await self.llm.complete(prompt=prompt, system_prompt=system_prompt)
+            except HTTPException as exc:
+                if exc.status_code == 504 and attempt < retries:
+                    delay = 2**attempt
+                    await self.emit_event(
+                        EventType.LLM_RETRY,
+                        {
+                            "attempt": attempt + 1,
+                            "max_attempts": retries + 1,
+                            "delay_seconds": delay,
+                            "reason": "timeout",
+                        },
+                    )
+                    await asyncio.sleep(delay)
+                    continue
+                raise
 
     @abc.abstractmethod
     async def run(self) -> Any:  # pragma: no cover - implemented by subclasses

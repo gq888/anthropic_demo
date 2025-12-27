@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import type { CitationEntry, EventMessage, RunSummary } from './types';
+import type { CitationEntry, EvaluationResult, EventMessage, RunSummary } from './types';
 
 const API_BASE = (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_BASE ??
   'http://localhost:8000/api';
@@ -130,6 +130,32 @@ export default function App() {
                       </div>
                     )}
                   </div>
+                ) : event.type === 'evaluation_completed' ? (
+                  <div className="evaluation-event">
+                    <div className="evaluation-overview">
+                      <span
+                        className={`score-pill ${((event.payload as any)?.passed ?? false) ? 'score-pass' : 'score-fail'}`}
+                      >
+                        {Math.round((((event.payload as any)?.overall_score ?? 0) as number) * 100)}%
+                      </span>
+                      <span className="score-status">
+                        {((event.payload as any)?.passed ?? false) ? 'Pass' : 'Needs review'}
+                      </span>
+                    </div>
+                    <div className="rubric-grid">
+                      {Object.entries(((event.payload as any)?.rubric_scores ?? {}) as Record<string, number>).map(
+                        ([criterion, score]) => (
+                          <div key={criterion} className="rubric-row">
+                            <span className="rubric-label">{criterion.replace(/_/g, ' ')}</span>
+                            <span className="rubric-score">{Math.round(score * 100)}%</span>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                    {Boolean((event.payload as any)?.feedback) && (
+                      <p className="evaluation-feedback">{String((event.payload as any)?.feedback)}</p>
+                    )}
+                  </div>
                 ) : (
                   <pre>{JSON.stringify(event.payload, null, 2)}</pre>
                 )}
@@ -182,10 +208,48 @@ export default function App() {
                   <p className="muted">Citations will be listed once the citation agent completes.</p>
                 )}
               </div>
+              <div>
+                <h3>Evaluation</h3>
+                {runQuery.data.evaluation ? (
+                  <EvaluationSummary evaluation={runQuery.data.evaluation} />
+                ) : (
+                  <p className="muted">Evaluation will appear once the judge agent completes.</p>
+                )}
+              </div>
             </div>
           </section>
         )}
       </main>
+    </div>
+  );
+}
+
+type EvaluationSummaryProps = {
+  evaluation: EvaluationResult;
+};
+
+function EvaluationSummary({ evaluation }: EvaluationSummaryProps) {
+  const entries = Object.entries(evaluation.rubric_scores ?? {});
+
+  return (
+    <div className="evaluation-card">
+      <div className="evaluation-overview">
+        <span className={`score-pill ${evaluation.passed ? 'score-pass' : 'score-fail'}`}>
+          {Math.round(evaluation.overall_score * 100)}%
+        </span>
+        <span className="score-status">{evaluation.passed ? 'Pass' : 'Needs review'}</span>
+      </div>
+      {entries.length > 0 && (
+        <div className="rubric-grid">
+          {entries.map(([criterion, score]) => (
+            <div key={criterion} className="rubric-row">
+              <span className="rubric-label">{criterion.replace(/_/g, ' ')}</span>
+              <span className="rubric-score">{Math.round(score * 100)}%</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {evaluation.feedback && <p className="evaluation-feedback">{evaluation.feedback}</p>}
     </div>
   );
 }

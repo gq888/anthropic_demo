@@ -247,3 +247,86 @@ a {
   background: rgba(88, 166, 255, 0.2);
   border-color: rgba(88, 166, 255, 0.5);
 }
+
+/* Evaluation styles */
+.evaluation-card,
+.evaluation-event {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(12, 18, 26, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.evaluation-overview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.score-pass {
+  background: rgba(74, 222, 128, 0.2);
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  color: #4ade80;
+}
+
+.score-fail {
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #f87171;
+}
+
+.score-status {
+  font-size: 0.9rem;
+  color: #9ea7b3;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rubric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px 16px;
+}
+
+.rubric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rubric-label {
+  color: #9ea7b3;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.rubric-score {
+  color: #f0f6fc;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.evaluation-feedback {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #c9d1d9;
+  background: rgba(1, 4, 9, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid rgba(248, 250, 252, 0.2);
+}

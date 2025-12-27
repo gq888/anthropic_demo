@@ -9,6 +9,7 @@ class AgentRole(str, Enum):
     LEAD_RESEARCHER = "lead_researcher"
     SUBAGENT = "subagent"
     CITATION = "citation"
+    EVALUATOR = "evaluator"
 
 
 class AgentStatus(str, Enum):
@@ -36,3 +37,5 @@ class EventType(str, Enum):
     FINDING_RECORDED = "finding_recorded"
     PLAN_UPDATED = "plan_updated"
     CITATIONS_GENERATED = "citations_generated"
+    EVALUATION_COMPLETED = "evaluation_completed"
+    LLM_RETRY = "llm_retry"

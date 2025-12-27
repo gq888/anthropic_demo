@@ -25,6 +25,17 @@ class AgentState:
 
 
 @dataclass(slots=True)
+class EvaluationResult:
+    """Represents an LLM-judged evaluation of a research run output."""
+
+    rubric_scores: Dict[str, float]
+    overall_score: float
+    passed: bool
+    feedback: Optional[str] = None
+    raw_judgement: Optional[str] = None
+
+
+@dataclass(slots=True)
 class ResearchRun:
     """Represents an orchestrated research workflow execution."""
 
@@ -38,6 +49,7 @@ class ResearchRun:
     plan: Optional[str] = None
     final_report: Optional[str] = None
     citations: List[dict] = field(default_factory=list)
+    evaluation: Optional[EvaluationResult] = None
 
     def update_timestamp(self) -> None:
         self.updated_at = datetime.utcnow()

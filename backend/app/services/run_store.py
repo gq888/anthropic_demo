@@ -9,7 +9,7 @@ from uuid import uuid4
 from app.models.enums import AgentRole, AgentStatus, RunStatus
 from app.models.events import RunEvent
 from app.services.event_bus import event_bus
-from app.models.run import AgentState, ResearchRun
+from app.models.run import AgentState, ResearchRun, EvaluationResult
 
 
 class RunStore:
@@ -112,6 +112,12 @@ class RunStore:
             run = self._runs[run_id]
             run.final_report = report
             run.citations = citations or []
+            run.update_timestamp()
+
+    async def save_evaluation(self, run_id: str, evaluation: EvaluationResult) -> None:
+        async with self._lock:
+            run = self._runs[run_id]
+            run.evaluation = evaluation
             run.update_timestamp()
 
 

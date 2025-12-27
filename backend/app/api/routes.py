@@ -9,7 +9,8 @@ from pydantic import BaseModel
 
 from app.agents.lead_researcher import LeadResearcherAgent
 from app.core.settings import Settings, get_settings
-from app.models.enums import RunStatus
+from app.models.enums import EventType, RunStatus
+from app.models.events import RunEvent
 from app.models.run import ResearchRun
 from app.services.event_bus import event_bus
 from app.services.run_store import run_store
@@ -32,6 +33,7 @@ class RunSummaryResponse(BaseModel):
     plan: Optional[str] = None
     final_report: Optional[str] = None
     citations: List[CitationResponse] = []
+    evaluation: Optional[dict] = None
 
 
 @router.post("/runs", response_model=dict)
@@ -48,8 +50,19 @@ async def create_run(
     run = await run_store.create_run(query=query, goal=goal)
 
     async def orchestrate() -> None:
-        agent = LeadResearcherAgent(run_id=run.id, query=query, goal=goal)
-        await agent.run()
+        try:
+            agent = LeadResearcherAgent(run_id=run.id, query=query, goal=goal)
+            await agent.run()
+        except Exception as exc:  # noqa: BLE001 - handled by agent but guard background task
+            await run_store.update_run_status(run.id, RunStatus.FAILED)
+            await run_store.add_event(
+                RunEvent(
+                    run_id=run.id,
+                    type=EventType.RUN_FAILED,
+                    payload={"error": str(exc)},
+                )
+            )
+            # raise exc
 
     background_tasks.add_task(orchestrate)
     return {"run_id": run.id, "status": run.status}
@@ -69,7 +82,16 @@ async def get_run(run_id: str) -> RunSummaryResponse:
                 citation=citation.get("citation", ""),
                 url=citation.get("url")
             ))
-    
+
+    evaluation_payload = None
+    if run.evaluation:
+        evaluation_payload = {
+            "rubric_scores": run.evaluation.rubric_scores,
+            "overall_score": run.evaluation.overall_score,
+            "passed": run.evaluation.passed,
+            "feedback": run.evaluation.feedback,
+        }
+
     return RunSummaryResponse(
         id=run.id,
         query=run.query,
@@ -77,7 +99,8 @@ async def get_run(run_id: str) -> RunSummaryResponse:
         status=run.status.value,
         plan=run.plan,
         final_report=run.final_report,
-        citations=formatted_citations
+        citations=formatted_citations,
+        evaluation=evaluation_payload,
     )
 
 
