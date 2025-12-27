@@ -1,0 +1,249 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #e6edf3;
+  background-color: #0d1117;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0d1117;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 32px;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 60%),
+    radial-gradient(circle at 20% 20%, rgba(248, 250, 252, 0.08), transparent 45%),
+    #05060a;
+  color: #c9d1d9;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: #58a6ff;
+  margin: 0;
+}
+
+h1 {
+  margin: 8px 0 0;
+  font-size: 2rem;
+  color: #f0f6fc;
+}
+
+.run-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: #8b949e;
+  background: rgba(88, 166, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.panel {
+  background: rgba(13, 17, 23, 0.75);
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+  min-height: 320px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #e6edf3;
+}
+
+.panel-header p {
+  margin-top: 4px;
+  color: #9ea7b3;
+  font-size: 0.95rem;
+}
+
+label {
+  display: block;
+  font-size: 0.95rem;
+  margin-top: 16px;
+  color: #9ea7b3;
+}
+
+textarea {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(240, 246, 252, 0.15);
+  background: rgba(33, 38, 45, 0.9);
+  color: #f0f6fc;
+  resize: vertical;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #58a6ff, #a855f7);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.events {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.events[data-empty='true'] {
+  justify-content: center;
+}
+
+.event-item {
+  border-radius: 12px;
+  background: rgba(22, 27, 34, 0.85);
+  border: 1px solid rgba(88, 166, 255, 0.2);
+  padding: 12px;
+  font-size: 0.85rem;
+  color: #c9d1d9;
+}
+
+.event-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.event-type {
+  font-family: 'JetBrains Mono', monospace;
+  color: #58a6ff;
+}
+
+pre {
+  margin: 0;
+  background: rgba(1, 4, 9, 0.4);
+  padding: 12px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+.final {
+  white-space: normal; /* 允许换行 */
+  word-wrap: break-word; /* 允许单词内部断行 */
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  font-weight: 600;
+}
+
+ul {
+  padding-left: 20px;
+  margin: 12px 0 0;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+a {
+  margin-left: 8px;
+  color: #58a6ff;
+}
+
+.muted {
+  color: #8b949e;
+}
+
+/* Citation-specific styling */
+.citations-list {
+  margin-top: 12px;
+}
+
+.citation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: rgba(1, 4, 9, 0.4);
+  border-radius: 8px;
+  border-left: 3px solid #58a6ff;
+}
+
+.citation-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: bold;
+  color: #58a6ff;
+  min-width: 30px;
+  flex-shrink: 0;
+}
+
+.citation-text {
+  flex: 1;
+  color: #c9d1d9;
+  line-height: 1.4;
+}
+
+.citation-link {
+  margin-left: 8px;
+  padding: 4px 8px;
+  background: rgba(88, 166, 255, 0.1);
+  border: 1px solid rgba(88, 166, 255, 0.3);
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.citation-link:hover {
+  background: rgba(88, 166, 255, 0.2);
+  border-color: rgba(88, 166, 255, 0.5);
+}
