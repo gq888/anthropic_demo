@@ -2,6 +2,7 @@
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router as api_router
 from app.core.settings import Settings, get_settings
@@ -12,13 +13,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "http://8.213.146.118:5173",
-        "https://8.213.146.118:5173",
-        "http://8.213.146.118:5173/",
-        "https://8.213.146.118:5173/",
-        "https://gq888.github.io/",
-        "https://gq888.github.io",
-        # "*",
+        "http://8.213.146.118:8000",
+        "https://8.213.146.118:8000",
     ],
     #allow_origin_regex=r"https?://(localhost|127\.0\.0\.1|8\.213\.146\.118)(:\d+)?$|https://gq888\.github\.io",
     allow_credentials=True,
@@ -26,6 +22,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(api_router)
+
+# Serve the built frontend directly from the backend to avoid cross-origin requests in production.
+app.mount(
+    "/",
+    StaticFiles(directory="app/static", html=True),
+    name="static",
+)
 
 
 @app.get("/health", tags=["system"])
