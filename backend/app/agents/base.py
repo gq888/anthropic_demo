@@ -42,7 +42,6 @@ class BaseAgent(abc.ABC):
                 run_id=self.run_id,
                 type=event_type,
                 agent_id=self.agent_id,
-                timestamp=datetime.utcnow(),
                 payload=payload or {},
             )
         )
