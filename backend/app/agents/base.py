@@ -62,7 +62,7 @@ class BaseAgent(abc.ABC):
         self,
         prompt: str,
         system_prompt: Optional[str] = None,
-        retries: int = 4,
+        retries: int = 9,
     ) -> str:
         prompt_preview = prompt.strip()
         if len(prompt_preview) > 500:

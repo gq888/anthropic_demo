@@ -40,7 +40,7 @@ class LeadResearcherAgent(BaseAgent):
             await run_store.save_plan(self.run_id, plan)
             await self.emit_event(EventType.PLAN_UPDATED, {"plan": plan})
 
-            tasks = [segment.strip("- ").strip() for segment in plan.splitlines() if segment.strip().startswith("-")]
+            tasks = [segment.strip("- ").strip() for segment in plan.splitlines() if segment.startswith("- ")]
             if not tasks:
                 tasks = [self.query]
 
