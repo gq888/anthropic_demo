@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import List, Optional
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
@@ -34,6 +35,18 @@ class RunSummaryResponse(BaseModel):
     final_report: Optional[str] = None
     citations: List[CitationResponse] = []
     evaluation: Optional[dict] = None
+
+
+BEIJING_TZ = ZoneInfo("Asia/Shanghai")
+
+
+def format_beijing(timestamp):
+    if timestamp is None:
+        return None
+    try:
+        return timestamp.astimezone(BEIJING_TZ).isoformat()
+    except AttributeError:
+        return str(timestamp)
 
 
 @router.post("/runs", response_model=dict)
@@ -110,7 +123,7 @@ async def get_run_events(run_id: str) -> List[dict]:
     return [
         {
             "type": event.type.value,
-            "timestamp": event.timestamp,
+            "timestamp": format_beijing(event.timestamp),
             "payload": event.payload,
             "agent_id": event.agent_id,
         }
@@ -135,7 +148,7 @@ async def run_events_ws(websocket: WebSocket, run_id: str) -> None:
             await websocket.send_json(
                 {
                     "type": event.type.value,
-                    "timestamp": event.timestamp.isoformat(),
+                    "timestamp": format_beijing(event.timestamp),
                     "payload": event.payload,
                     "agent_id": event.agent_id,
                 }
@@ -161,7 +174,7 @@ async def run_events_ws(websocket: WebSocket, run_id: str) -> None:
                 await websocket.send_json(
                     {
                         "type": event.type.value,
-                        "timestamp": event.timestamp.isoformat(),
+                        "timestamp": format_beijing(event.timestamp),
                         "payload": payload,
                         "agent_id": event.agent_id,
                     }
@@ -170,7 +183,7 @@ async def run_events_ws(websocket: WebSocket, run_id: str) -> None:
                 await websocket.send_json(
                     {
                         "type": event.type.value,
-                        "timestamp": event.timestamp.isoformat(),
+                        "timestamp": format_beijing(event.timestamp),
                         "payload": event.payload,
                         "agent_id": event.agent_id,
                     }
