@@ -8,6 +8,26 @@ const API_BASE = (import.meta as ImportMeta & { env: Record<string, string> }).e
 const WS_BASE = (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_WS_BASE ??
   'ws://8.213.146.118:8000/api/ws';
 
+const BEIJING_TIME_FORMATTER = new Intl.DateTimeFormat('zh-CN', {
+  timeZone: 'Asia/Shanghai',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
+const formatBeijingTime = (timestamp: string) => {
+  try {
+    return BEIJING_TIME_FORMATTER.format(new Date(timestamp));
+  } catch (error) {
+    console.error('Failed to format timestamp', error);
+    return timestamp;
+  }
+};
+
 export default function App() {
   const [query, setQuery] = useState('2025年排名最高的AI代理平台有哪些？');
   const [goal, setGoal] = useState('总结生态和差异。');
@@ -117,7 +137,7 @@ export default function App() {
               <article key={`${event.type}-${idx}`} className="event-item">
                 <div className="event-meta">
                   <span className="event-type">{event.type}</span>
-                  <span>{new Date(event.timestamp).toLocaleTimeString()}</span>
+                  <span>{formatBeijingTime(event.timestamp)}</span>
                 </div>
                 {event.type === 'citations_generated' ? (
                   <div className="citation-event">
