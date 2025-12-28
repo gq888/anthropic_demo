@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+.env.local
+.env.*.local
+node_modules/
+.next/
+.env.test
+.DS_Store
+*.log
+*.sqlite3
+.env.local
+.env.production
+.env.development
+.env.test
+.env.*

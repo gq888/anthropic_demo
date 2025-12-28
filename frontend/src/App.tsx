@@ -4,9 +4,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import type { CitationEntry, EvaluationResult, EventMessage, RunSummary } from './types';
 
 const API_BASE = (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_BASE ??
-  'http://localhost:8000/api';
+  'http://8.213.146.118:8000/api';
 const WS_BASE = (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_WS_BASE ??
-  'ws://localhost:8000/api/ws';
+  'ws://8.213.146.118:8000/api/ws';
 
 export default function App() {
   const [query, setQuery] = useState('2025年排名最高的AI代理平台有哪些？');
