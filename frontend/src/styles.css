@@ -15,6 +15,46 @@ body {
   background-color: #0d1117;
 }
 
+.qr-floating {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.qr-floating img {
+  width: 140px;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(88, 166, 255, 0.4);
+  box-shadow: 0 12px 32px rgba(8, 47, 73, 0.45);
+}
+
+.qr-close {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.qr-close:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(239, 68, 68, 0.45);
+}
+
 .app-shell {
   min-height: 100vh;
   padding: 32px;

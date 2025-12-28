@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import type { CitationEntry, EvaluationResult, EventMessage, RunSummary } from './types';
+import qrCodeImage from './assets/ewm.png';
 
 const API_BASE = (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_BASE ??
   'http://8.213.146.118:8000/api';
@@ -33,6 +34,7 @@ export default function App() {
   const [goal, setGoal] = useState('总结生态和差异。');
   const [activeRunId, setActiveRunId] = useState<string>('');
   const [events, setEvents] = useState<EventMessage[]>([]);
+  const [showQr, setShowQr] = useState(true);
 
   const visibleEvents = useMemo(() =>
     events.filter((event) => {
@@ -101,6 +103,14 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      {showQr && (
+        <aside className="qr-floating">
+          <button className="qr-close" onClick={() => setShowQr(false)} aria-label="关闭二维码">
+            ×
+          </button>
+          <img src={qrCodeImage} alt="扫码关注" />
+        </aside>
+      )}
       <header>
         <div>
           <p className="eyebrow">Inspired by Anthropic's Research architecture</p>
