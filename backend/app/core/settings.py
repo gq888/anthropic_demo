@@ -33,7 +33,6 @@ class Settings(BaseSettings):
 
     openai_api_key: str = Field(
         alias="OPENAI_API_KEY",
-        default="sk-hxpdxoddnpsmvqtacagzotqljfxkterlfplpkhwrittzgdhy",
         description="API key for the OpenAI-compatible endpoint defined in the article requirements.",
     )
     openai_model: str = Field(
