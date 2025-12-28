@@ -34,6 +34,16 @@ export default function App() {
   const [activeRunId, setActiveRunId] = useState<string>('');
   const [events, setEvents] = useState<EventMessage[]>([]);
 
+  const visibleEvents = useMemo(() =>
+    events.filter((event) => {
+      if (event.type === 'run_state') {
+        const payload = (event as any).payload;
+        return payload && Object.keys(payload).length > 0;
+      }
+      return true;
+    }),
+  [events]);
+
   useEffect(() => {
     if (!activeRunId) {
       return undefined;
@@ -131,9 +141,9 @@ export default function App() {
             <h2>Live Event Stream</h2>
             <p>WebSocket feed of planning, delegation, tool calls and synthesis.</p>
           </div>
-          <div className="events" data-empty={!events.length}>
-            {events.length === 0 && <p className="muted">Run events will appear here once started.</p>}
-            {events.map((event: EventMessage, idx: number) => (
+          <div className="events" data-empty={!visibleEvents.length}>
+            {visibleEvents.length === 0 && <p className="muted">Run events will appear here once started.</p>}
+            {visibleEvents.map((event: EventMessage, idx: number) => (
               <article key={`${event.type}-${idx}`} className="event-item">
                 <div className="event-meta">
                   <span className="event-type">{event.type}</span>
